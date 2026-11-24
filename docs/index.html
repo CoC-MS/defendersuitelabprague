@@ -1,0 +1,452 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALSO Defender Suite Lab Prague November</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <h1>ALSO Defender Suite Lab Prague November</h1>
+  <p>Step-by-step hands-on lab guide: harden Microsoft Entra ID, Intune and Microsoft Defender with the Defender Suite add-on.</p>
+  <span class="badge">16 configuration steps</span><span class="badge">7 test scenarios</span><span class="badge">Tick steps off as you go</span>
+</header>
+
+<div id="progress"><strong>Your progress</strong><div id="bar"><i></i></div><span id="pct"></span></div>
+
+<div class="layout">
+<nav class="toc">
+  <h3>Lab contents</h3>
+  <a href="#before">Before you start</a>
+  <div class="grp">Part 1 – Configure</div>
+  <a href="#s1">1. Reduce Global Admins</a>
+  <a href="#s2">2. Create admin group</a>
+  <a href="#s3">3. Passkey (FIDO2) settings</a>
+  <a href="#s4">4. TAP &amp; register passkeys</a>
+  <a href="#s5">5. Authentication context</a>
+  <a href="#s6">6. PIM settings for Global Admin</a>
+  <a href="#s7">7. Restricted admin unit</a>
+  <a href="#s8">8. Conditional Access policies</a>
+  <a href="#s9">9. Access review: admin roles</a>
+  <a href="#s10">10. Add app owners</a>
+  <a href="#s11">11. Access review: app owners</a>
+  <a href="#s12">12. Intune antivirus policy</a>
+  <a href="#s13">13. Unsanction DeepSeek</a>
+  <a href="#s14">14. Email notifications</a>
+  <a href="#s15">15. App governance policy</a>
+  <a href="#s16">16. Risky app registration</a>
+  <a href="#s17">17. (Final check)</a>
+  <div class="grp">Part 2 – Test</div>
+  <a href="#t1">T1. Phishing-resistant sign-in</a>
+  <a href="#t2">T2. PIM activation</a>
+  <a href="#t3">T3. Admin role review</a>
+  <a href="#t4">T4. App owner review</a>
+  <a href="#t5">T5. DeepSeek blocked</a>
+  <a href="#t6">T6. Risky app alert</a>
+  <a href="#t7">T7. Protected admin group</a>
+</nav>
+
+<main>
+
+<section class="step" id="before">
+  <h2>Before you start</h2>
+  <div class="note"><b>ℹ️</b> Sign in to your lab tenant as <b>MOD Administrator</b> – this is the account you will use to do everything. Keep it signed in all lab long.</div>
+  <table>
+    <tr><th>Portal</th><th>Address</th></tr>
+    <tr><td>Microsoft Entra admin center</td><td><code>entra.microsoft.com</code></td></tr>
+    <tr><td>Microsoft Intune admin center</td><td><code>intune.microsoft.com</code></td></tr>
+    <tr><td>Microsoft Defender portal</td><td><code>security.microsoft.com</code></td></tr>
+    <tr><td>Outlook (mail for tests)</td><td><code>outlook.com</code></td></tr>
+  </table>
+  <div class="tip"><b>💡</b> You also need a smartphone with <b>Microsoft Authenticator</b> installed (Step 4). Click any screenshot to enlarge it.</div>
+  <div class="warn"><b>⚠️</b> Do the steps in order – later steps depend on the earlier ones. Always keep <b>MOD Administrator</b> as a working Global Admin so you cannot lock yourself out.</div>
+</section>
+
+<h3 class="part">Part 1 – Configure</h3>
+
+<section class="step" id="s1">
+  <h2><span class="num">1</span>Reduce the number of Global Admins</h2>
+  <div class="path">entra.microsoft.com → Entra ID → Roles &amp; admins → Microsoft Entra ID roles</div>
+  <ol class="do">
+    <li>Open the role list and find <b>Global Administrator</b>.
+      <figure><img src="images/image1.png" alt="Entra roles list"></figure></li>
+    <li>Click the <b>number</b> of Global Administrators.
+      <figure><img src="images/image2.png" alt="Global admin count"></figure></li>
+    <li>Leave only <b>3 people</b> with the Global Admin role, including <b>MOD Administrator</b>. Select <b>Remove</b> for the others.</li>
+    <li>For the 2 remaining admins other than MOD Administrator, click <b>Update</b> and change the assignment to <b>Eligible</b>.
+      <div class="warn"><b>⚠️</b> Do NOT change the account you are signed in with (MOD Administrator).</div>
+      <div class="pair"><figure><img src="images/image3.png" alt="Remove"></figure><figure><img src="images/image4.png" alt="Update to eligible"></figure></div></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s1"> Step 1 done</label>
+</section>
+
+<section class="step" id="s2">
+  <h2><span class="num">2</span>Create a group for the Global Admins</h2>
+  <div class="path">Entra ID → Groups → New group</div>
+  <ol class="do">
+    <li>Create the group as shown in the picture (name it <code>All Global Admins</code>, security group).</li>
+    <li>Add both remaining Global Admins as members – <b>not</b> MOD Administrator.
+      <figure><img src="images/image5.png" alt="Create group"></figure></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s2"> Step 2 done</label>
+</section>
+
+<section class="step" id="s3">
+  <h2><span class="num">3</span>Configure Passkey (FIDO2) settings</h2>
+  <div class="path">Entra ID → Authentication methods → Passkey (FIDO2)</div>
+  <ol class="do">
+    <li>Click <b>Passkey (FIDO2)</b> → <b>Configure</b> → <b>Add profile</b>.
+      <figure><img src="images/image6.png" alt="Add passkey profile"></figure></li>
+    <li>Configure the profile as shown and <b>Save</b>.
+      <figure><img src="images/image7.png" alt="Profile settings"></figure></li>
+    <li>Go to <b>Enable and target → Include → Select targets</b>.
+      <figure><img src="images/image8.png" alt="Select targets"></figure></li>
+    <li>Select the <b>All Global Admins</b> group and click <b>Save</b>.
+      <figure><img src="images/image9.png" alt="Select group"></figure></li>
+  </ol>
+  <div class="note"><b>ℹ️</b> In production you would add an <b>allow list of GUIDs</b> (only approved passkey models) and target <i>all</i> admins. In the lab we skip the GUIDs and use Global Admins only. The goal: allow only <b>device-bound passkeys</b>.</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-s3"> Step 3 done</label>
+</section>
+
+<section class="step" id="s4">
+  <h2><span class="num">4</span>Issue a Temporary Access Pass and register passkeys</h2>
+  <div class="path">Entra ID → Users → (each Global Admin except MOD Administrator) → Authentication methods</div>
+  <ol class="do">
+    <li>Open the first Global Admin user → <b>Authentication methods</b>.
+      <figure><img src="images/image10.png" alt="User auth methods"></figure></li>
+    <li>Click <b>Add authentication method → Temporary Access Pass</b>. Set <b>One-time use = Yes</b> and click <b>Add</b>.</li>
+    <li><b>Copy the TAP code</b> shown on screen.
+      <figure><img src="images/image11.png" alt="TAP code"></figure></li>
+    <li>Repeat for the <b>other</b> Global Admin account.</li>
+    <li>Send both <b>usernames + TAP codes</b> to your phone (Teams, mail, …).</li>
+    <li>On your phone open <b>Microsoft Authenticator → Add work or school account</b>. Enter the username and TAP for the first account and <b>register the passkey</b>.</li>
+    <li>Repeat on the second account.</li>
+    <li>Test: sign in with each account and choose the <b>iOS or Android</b> passkey sign-in method.
+      <figure><img src="images/image12.png" alt="Passkey sign-in"></figure></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s4"> Step 4 done</label>
+</section>
+
+<section class="step" id="s5">
+  <h2><span class="num">5</span>Create an Authentication Context</h2>
+  <div class="path">Entra ID → Conditional Access → Authentication contexts</div>
+  <ol class="do">
+    <li>Open <b>Authentication contexts</b>.
+      <figure><img src="images/image13.png" alt="Authentication contexts"></figure></li>
+    <li>Create one context named <code>PIM role activation</code> and make sure it is published to apps.
+      <div class="pair"><figure><img src="images/image14.png" alt="New context"></figure><figure><img src="images/image15.png" alt="Context saved"></figure></div></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s5"> Step 5 done</label>
+</section>
+
+<section class="step" id="s6">
+  <h2><span class="num">6</span>Harden the Global Admin role in PIM</h2>
+  <div class="path">Entra ID → Roles &amp; admins → Microsoft Entra ID roles → Global Administrator → Settings</div>
+  <ol class="do">
+    <li>Open <b>Global Administrator</b> and click <b>Settings</b>.
+      <figure><img src="images/image16.png" alt="Role settings"></figure></li>
+    <li>Click <b>Edit</b>.
+      <figure><img src="images/image17.png" alt="Edit"></figure></li>
+    <li>Configure the <b>Activation</b> tab as shown (use the <code>PIM role activation</code> authentication context).
+      <figure><img src="images/image18.png" alt="Activation settings"></figure>
+      <div class="tip"><b>💡</b> For highly privileged roles add approvers. MOD Administrator can approve the 2 other Global Admins.</div></li>
+    <li>Click <b>Next: Assignment</b> and configure as shown. Set expiration to <b>3 months</b> (your tenant is valid for 3 months).
+      <figure><img src="images/image19.png" alt="Assignment settings"></figure></li>
+    <li>Click <b>Next: Notification</b> and add your approvers' email addresses, separated by semicolons.
+      <figure><img src="images/image20.png" alt="Notification settings"></figure></li>
+    <li>Click <b>Update</b>.</li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s6"> Step 6 done</label>
+</section>
+
+<section class="step" id="s7">
+  <h2><span class="num">7</span>Protect admin accounts with a restricted management admin unit</h2>
+  <div class="path">Entra ID → Roles &amp; admins → Admin units → Add</div>
+  <ol class="do">
+    <li>Click <b>Admin units → Add</b> and create the unit named <code>Global Admin Restricted Management</code>. Enable <b>Restricted management</b>.
+      <div class="pair"><figure><img src="images/image21.png" alt="Admin units"></figure><figure><img src="images/image22.png" alt="Create admin unit"></figure></div></li>
+    <li>Choose role <b>User Administrator</b>; select your current account + 1 more of your choice.</li>
+    <li><b>Review + Create</b>.</li>
+    <li>In the new admin unit, add the <b>All Global Admins</b> security group.
+      <figure><img src="images/image23.png" alt="Add group to admin unit"></figure></li>
+    <li>Go to <b>Roles &amp; admins</b> → click <b>User Administrator</b>.
+      <figure><img src="images/image24.png" alt="User Administrator role"></figure></li>
+    <li>Update your assignment from <b>permanently active</b> to <b>permanently eligible</b>, then <b>Save</b>.
+      <div class="pair"><figure><img src="images/image25.png" alt="Update assignment"></figure><figure><img src="images/image26.png" alt="Eligible"></figure></div></li>
+  </ol>
+  <div class="note"><b>ℹ️</b> This prevents anyone with a role – even other Global Admins – from deleting/editing the Global Admin group or resetting its members' passwords. Ideally also create <b>2 break-glass accounts</b> the same way (with an <i>active</i> role assignment on both). Do that only if you have time; the point is to protect privileged accounts from internal mistakes.</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-s7"> Step 7 done</label>
+</section>
+
+<section class="step" id="s8">
+  <h2><span class="num">8</span>Create the Conditional Access policies</h2>
+  <div class="path">Entra ID → Conditional Access → Policies → New policy</div>
+  <h3>Policy A – <code>Require phishing-resistant MFA for Administrators</code></h3>
+  <table>
+    <tr><th>Setting</th><th>Value</th></tr>
+    <tr><td>Users – Include</td><td>All Global Admins</td></tr>
+    <tr><td>Users – Exclude</td><td>Your break-glass account group</td></tr>
+    <tr><td>Target resources</td><td>All resources</td></tr>
+    <tr><td>Grant</td><td>Grant access → <b>Require authentication strength → Phishing-resistant MFA</b></td></tr>
+    <tr><td>Enable policy</td><td><b>On</b> → Save</td></tr>
+  </table>
+  <h3>Policy B – <code>Require authentication context role activation in PIM</code></h3>
+  <table>
+    <tr><th>Setting</th><th>Value</th></tr>
+    <tr><td>Users – Include</td><td>All Global Admins</td></tr>
+    <tr><td>Users – Exclude</td><td>Your break-glass account group</td></tr>
+    <tr><td>Target resources</td><td><b>Authentication context → PIM role activation</b></td></tr>
+    <tr><td>Session</td><td>Sign-in frequency → <b>Every time – strict (preview)</b> recommended</td></tr>
+    <tr><td>Grant</td><td>Grant access → <b>Require authentication strength → Phishing-resistant MFA</b></td></tr>
+    <tr><td>Enable policy</td><td><b>On</b> → Save</td></tr>
+  </table>
+  <div class="tip"><b>💡</b> “Strict” re-auth has a much shorter window (10 seconds vs 5 minutes), so phishing-resistant MFA is required again right after sign-in. If you have time, create your own strength under <b>Entra ID → Authentication methods → Authentication strengths</b> (e.g. Passkey only) and use it in the policy.</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-s8"> Step 8 done</label>
+</section>
+
+<section class="step" id="s9">
+  <h2><span class="num">9</span>Access review for Entra roles</h2>
+  <div class="path">Entra ID → ID Governance → Access reviews → Microsoft Entra roles</div>
+  <ol class="do">
+    <li>Open <b>Microsoft Entra roles</b>.
+      <figure><img src="images/image27.png" alt="Access reviews"></figure></li>
+    <li>Click <b>New</b>.
+      <figure><img src="images/image28.png" alt="New review"></figure></li>
+    <li>Configure the settings marked in <b>red</b>. Skip <i>Advanced</i>.
+      <figure><img src="images/image29.png" alt="Review settings"></figure></li>
+    <li>Click <b>Start</b>.</li>
+  </ol>
+  <div class="note"><b>ℹ️</b> In production this review would cover several roles and Azure roles. Reviewing <b>service principals</b> needs an Entra Workload ID Premium license and can’t be tested in this lab.</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-s9"> Step 9 done</label>
+</section>
+
+<section class="step" id="s10">
+  <h2><span class="num">10</span>Add owners to the enterprise app</h2>
+  <div class="path">Entra ID → Enterprise apps → Mod Demo Platform App → Owners</div>
+  <ol class="do">
+    <li>Open the enterprise app <b>Mod Demo Platform App</b>.
+      <figure><img src="images/image30.png" alt="Enterprise app"></figure></li>
+    <li>Go to <b>Owners → Add</b> and add your own account and/or other accounts as owners.
+      <figure><img src="images/image31.png" alt="Add owners"></figure></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s10"> Step 10 done</label>
+</section>
+
+<section class="step" id="s11">
+  <h2><span class="num">11</span>Access review for enterprise app owners</h2>
+  <div class="path">Entra ID → ID Governance → Access reviews → New access review</div>
+  <ol class="do">
+    <li>Click <b>New access review</b>.
+      <figure><img src="images/image32.png" alt="New access review"></figure></li>
+    <li>Select <b>Review access to a resource type</b> (Applications).
+      <figure><img src="images/image33.png" alt="Resource type"></figure></li>
+    <li>Select <b>Applications</b>, select <b>all available applications</b>, scope <b>All users</b>. Click <b>Next: Reviews</b>.
+      <figure><img src="images/image34.png" alt="Scope"></figure></li>
+    <li>Configure <b>Reviews</b> as shown, then <b>Next: Settings</b>.
+      <figure><img src="images/image35.png" alt="Reviews"></figure></li>
+    <li>Configure <b>Settings</b> as shown, then <b>Next: Review + Create</b>.
+      <figure><img src="images/image36.png" alt="Settings"></figure></li>
+    <li>Name it <code>App Owner reviews of existing Enterprise applications</code> and click <b>Create</b>.</li>
+  </ol>
+  <div class="note"><b>ℹ️</b> Reviewing app owners from time to time is very important – as shown in the Day 1 demo.</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-s11"> Step 11 done</label>
+</section>
+
+<section class="step" id="s12">
+  <h2><span class="num">12</span>Intune antivirus policy <span class="optional">OPTIONAL</span></h2>
+  <div class="warn"><b>⚠️</b> Only for participants with a <b>Windows 11 VM or physical Windows 11 device enrolled in Intune</b>. Others can skip to Step 13.</div>
+  <div class="path">intune.microsoft.com → Endpoint security → Antivirus → Create policy</div>
+  <ol class="do">
+    <li>Click <b>Create policy</b>.
+      <figure><img src="images/image37.png" alt="Create policy"></figure></li>
+    <li>Choose platform <b>Windows</b> and profile <b>Microsoft Defender Antivirus</b>. Click <b>Create</b>.</li>
+    <li>Name it <code>Windows 11 AV Policy</code> → <b>Next</b>.</li>
+    <li>Configure the settings as shown.
+      <figure><img src="images/image38.png" alt="AV settings"></figure></li>
+    <li>Assign to <b>All devices</b> (or a security group with your device) and click <b>Save</b>.</li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s12"> Step 12 done</label>
+</section>
+
+<section class="step" id="s13">
+  <h2><span class="num">13</span>Mark DeepSeek as Unsanctioned</h2>
+  <div class="path">security.microsoft.com → SaaS apps → Cloud app catalog</div>
+  <ol class="do">
+    <li>Open the <b>Cloud app catalog</b> and search for <b>DeepSeek</b>.
+      <figure><img src="images/image39.png" alt="Cloud app catalog"></figure></li>
+    <li>Select <b>Tag app</b> → <b>Unsanctioned</b>.
+      <div class="pair"><figure><img src="images/image40.png" alt="Tag app"></figure><figure><img src="images/image41.png" alt="Unsanctioned"></figure></div></li>
+    <li>Confirm with <b>Save</b>.</li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s13"> Step 13 done</label>
+</section>
+
+<section class="step" id="s14">
+  <h2><span class="num">14</span>Set up case email notifications in Defender XDR</h2>
+  <div class="path">security.microsoft.com → Settings → Microsoft Defender XDR → Email notifications → Cases</div>
+  <ol class="do">
+    <li>Go to <b>Setup &amp; configuration → Settings → Defender XDR</b>.
+      <figure><img src="images/image42.png" alt="Defender XDR settings"></figure></li>
+    <li>Open <b>Email notifications → Cases → Add case notification rule</b>.
+      <figure><img src="images/image43.png" alt="Add case rule"></figure></li>
+    <li><b>Basics:</b> name it <code>Send all notifications</code> → <b>Next</b>. Configure as shown and select <b>all Sources</b> → <b>Next</b>.
+      <figure><img src="images/image44.png" alt="Sources"></figure></li>
+    <li><b>Recipients:</b> add your own email address → <b>Next</b> → <b>Submit</b>.
+      <figure><img src="images/image45.png" alt="Recipients"></figure></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s14"> Step 14 done</label>
+</section>
+
+<section class="step" id="s15">
+  <h2><span class="num">15</span>Create an app governance policy</h2>
+  <div class="path">security.microsoft.com → Assets → Applications → Create new policy</div>
+  <ol class="do">
+    <li>Click <b>Create new policy</b>.
+      <figure><img src="images/image46.png" alt="Create policy"></figure></li>
+    <li>Choose <b>Permissions</b> and <b>New highly privileged app</b> → <b>Next</b>.
+      <figure><img src="images/image47.png" alt="Policy type"></figure></li>
+    <li>Choose severity <b>High</b> → <b>Next</b>.
+      <figure><img src="images/image48.png" alt="Severity"></figure></li>
+    <li>Choose <b>No, I’ll customize the policy</b> → <b>Next</b>.
+      <figure><img src="images/image49.png" alt="Customize"></figure></li>
+    <li>Choose <b>All apps</b> → <b>Next</b>.
+      <figure><img src="images/image50.png" alt="All apps"></figure></li>
+    <li>Leave as is → <b>Next</b>.
+      <figure><img src="images/image51.png" alt="Leave defaults"></figure></li>
+    <li>Check <b>Disable app</b> → <b>Next</b>.
+      <figure><img src="images/image52.png" alt="Disable app"></figure></li>
+    <li>Choose <b>Active</b> → <b>Next</b>.
+      <figure><img src="images/image53.png" alt="Active"></figure></li>
+    <li>Review and click <b>Submit</b>.
+      <figure><img src="images/image54.png" alt="Submit"></figure></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-s15"> Step 15 done</label>
+</section>
+
+<section class="step" id="s16">
+  <h2><span class="num">16</span>Create a risky app registration</h2>
+  <div class="path">entra.microsoft.com → App registrations → New registration</div>
+  <p>This app will trigger the policy from Step 15.</p>
+  <ol class="do">
+    <li>Click <b>New registration</b>.
+      <figure><img src="images/image59.png" alt="New registration"></figure></li>
+    <li>Name it <code>test</code> (any name works) and click <b>Register</b>.</li>
+    <li>Go to <b>API permissions → Add a permission</b>.
+      <figure><img src="images/image60.png" alt="API permissions"></figure></li>
+    <li>Choose <b>Microsoft Graph → Application permissions</b>.
+      <figure><img src="images/image61.png" alt="Application permissions"></figure></li>
+    <li>Search <b>Mail</b>, press Enter, select <b>Mail.ReadWrite</b> and click <b>Add permissions</b>.
+      <figure><img src="images/image62.png" alt="Mail.ReadWrite"></figure></li>
+    <li>Repeat: search <b>ConditionalAccess</b>, select <b>Policy.ReadWrite.ConditionalAccess</b> (and others if you like).</li>
+    <li>Click <b>Grant admin consent for Contoso</b> → <b>Yes</b>.
+      <figure><img src="images/image63.png" alt="Grant consent"></figure></li>
+  </ol>
+  <div class="note"><b>ℹ️</b> Defender will raise an alert after some time and disable the app. See test <a href="#t6">T6</a>.</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-s16"> Step 16 done</label>
+</section>
+
+<section class="step" id="s17">
+  <h2><span class="num">17</span>Final check before testing</h2>
+  <ul>
+    <li>2 Global Admins eligible + MOD Administrator active</li>
+    <li>Passkeys registered on both admin accounts</li>
+    <li>Both Conditional Access policies are <b>On</b></li>
+    <li>Access reviews (roles and app owners) started</li>
+    <li>DeepSeek tagged Unsanctioned, risky app created</li>
+  </ul>
+  <p>Looks good? Continue to <b>Part 2 – Test</b>.</p>
+  <label class="done"><input type="checkbox" class="chk" id="c-s17"> Ready to test</label>
+</section>
+
+<h3 class="part">Part 2 – Test your configuration</h3>
+
+<section class="step" id="t1">
+  <h2><span class="num">T1</span>Phishing-resistant sign-in</h2>
+  <ol class="do">
+    <li>Sign out, then sign in to <code>entra.microsoft.com</code> with one of the admins in the <b>All Global Admins</b> group.</li>
+    <li>You are prompted for <b>phishing-resistant MFA</b>. If you try Authenticator push/code, it is not allowed.</li>
+  </ol>
+  <div class="tip"><b>✅ Result:</b> The sign-in is protected against attacks like adversary-in-the-middle (advanced phishing).</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-t1"> T1 done</label>
+</section>
+
+<section class="step" id="t2">
+  <h2><span class="num">T2</span>Activate Global Admin in PIM</h2>
+  <div class="path">Entra → ID Governance → Privileged Identity Management → Microsoft Entra roles → My roles → Eligible roles</div>
+  <ol class="do">
+    <li>Select <b>Activate</b> on Global Administrator.</li>
+    <li>You are asked to <b>re-authenticate with your passkey</b>.</li>
+  </ol>
+  <div class="tip"><b>✅ Result:</b> Even after a successful sign-in, role activation has a second layer of protection against AiTM phishing.</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-t2"> T2 done</label>
+</section>
+
+<section class="step" id="t3">
+  <h2><span class="num">T3</span>Complete the admin role access review</h2>
+  <ol class="do">
+    <li>Go to <code>outlook.com</code> and open the inbox of your account (or the reviewers you added).</li>
+    <li>Open the mail from Microsoft Security: <i>“Action required: Review access to the Global Administrator”</i> and click <b>Start review</b>.
+      <figure><img src="images/image55.png" alt="Review email"></figure></li>
+    <li>Select one account, add a reason and click <b>Deny</b>. <b>Approve</b> all the others.</li>
+    <li>Verify in the Entra portal that the Global Admin role was removed from the denied account.</li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-t3"> T3 done</label>
+</section>
+
+<section class="step" id="t4">
+  <h2><span class="num">T4</span>Complete the app owner access review</h2>
+  <ol class="do">
+    <li>Open the review email in your inbox.
+      <figure><img src="images/image56.png" alt="App owner review email"></figure></li>
+    <li>Find the enterprise app with owners assigned and do the same as in T3 (deny at least one owner).
+      <figure><img src="images/image57.png" alt="Review owners"></figure></li>
+    <li>Verify the denied app owners are removed from the app.</li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-t4"> T4 done</label>
+</section>
+
+<section class="step" id="t5">
+  <h2><span class="num">T5</span>DeepSeek is blocked <span class="optional">OPTIONAL</span></h2>
+  <ol class="do">
+    <li>On your Intune-enrolled VM/device, browse to <code>deepseek.com</code> (or another unsanctioned app).</li>
+    <li>You should see a <b>blocked</b> message.
+      <figure><img src="images/image58.png" alt="Blocked site"></figure></li>
+  </ol>
+  <div class="note"><b>ℹ️</b> It can take up to <b>48 hours</b> to fully work. Feel free to test later.</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-t5"> T5 done</label>
+</section>
+
+<section class="step" id="t6">
+  <h2><span class="num">T6</span>Risky app is detected and blocked</h2>
+  <ol class="do">
+    <li>Wait for the Defender alert email about the highly privileged app.
+      <figure><img src="images/image64.png" alt="Alert email"></figure></li>
+    <li>Confirm in the Entra portal that the app registration has been <b>disabled</b>.</li>
+  </ol>
+  <div class="note"><b>ℹ️</b> The email can take up to <b>12 hours</b> (usually ~6 hours).</div>
+  <label class="done"><input type="checkbox" class="chk" id="c-t6"> T6 done</label>
+</section>
+
+<section class="step" id="t7">
+  <h2><span class="num">T7</span>Admin accounts are protected</h2>
+  <div class="path">entra.microsoft.com → Users</div>
+  <ol class="do">
+    <li>Open a Global Admin user that is in <b>All Global Admins</b>. You should <b>not</b> be able to delete the user or reset the password.</li>
+    <li>Open the <b>All Global Admins</b> group: you should not be able to delete the group or add/remove members.
+      <div class="pair"><figure><img src="images/image65.png" alt="Blocked actions"></figure><figure><img src="images/image66.png" alt="Blocked actions 2"></figure></div></li>
+    <li>In PIM, <b>activate the eligible User Administrator</b> role. Now all the actions above work.
+      <figure><img src="images/image67.png" alt="Activate role"></figure></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="chk" id="c-t7"> T7 done</label>
+</section>
+
+<section class="step"><h2>🎉 Lab complete – thank you!</h2><p>You protected privileged identities with phishing-resistant MFA, PIM, restricted management, access reviews and app governance.</p></section>
+
+</main>
+</div>
+<footer>ALSO Defender Suite Lab Prague November</footer>
+<div id="lightbox"><img alt=""></div>
+<script src="script.js"></script>
+</body>
+</html>

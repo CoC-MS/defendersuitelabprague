@@ -1,0 +1,45 @@
+:root{--blue:#0f6cbd;--dark:#0b2545;--bg:#f5f8fc;--ok:#107c10;--warn:#8a6100;--warnbg:#fff8e1;--tip:#e8f3fc;--line:#d6e0ee}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;font:16px/1.65 "Segoe UI",system-ui,sans-serif;color:#1b1b1b;background:var(--bg)}
+header.hero{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:56px 24px 48px;text-align:center}
+.hero h1{margin:0 0 8px;font-size:2.1rem}
+.hero p{margin:4px auto;max-width:720px;opacity:.92}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 14px;margin:12px 4px 0;font-size:.9rem}
+#progress{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:8px 24px;display:flex;align-items:center;gap:14px;font-size:.9rem}
+#bar{flex:1;height:10px;background:#e3eaf4;border-radius:6px;overflow:hidden}
+#bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+.layout{display:flex;max-width:1250px;margin:0 auto;gap:28px;padding:24px}
+nav.toc{flex:0 0 260px;position:sticky;top:60px;align-self:flex-start;max-height:calc(100vh - 80px);overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:.88rem}
+nav.toc h3{margin:0 0 8px;font-size:.95rem}
+nav.toc a{display:block;color:#234;text-decoration:none;padding:3px 0}
+nav.toc a:hover{color:var(--blue)}
+nav.toc .grp{margin-top:10px;font-weight:600;color:var(--blue);font-size:.8rem;text-transform:uppercase}
+main{flex:1;min-width:0}
+section.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 26px;margin-bottom:22px}
+section.step h2{margin:0 0 4px;font-size:1.3rem;color:var(--dark);display:flex;gap:12px;align-items:center}
+.num{flex:none;width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem}
+.path{background:#eef3fa;border-left:4px solid var(--blue);padding:8px 12px;border-radius:4px;margin:10px 0;font-family:Consolas,monospace;font-size:.9rem}
+h3.part{font-size:1.5rem;color:var(--dark);margin:34px 0 14px;padding-bottom:6px;border-bottom:3px solid var(--blue)}
+ol.do{padding-left:0;list-style:none;counter-reset:s}
+ol.do>li{counter-increment:s;position:relative;padding:6px 0 6px 40px;margin:4px 0}
+ol.do>li::before{content:counter(s);position:absolute;left:0;top:7px;width:26px;height:26px;border-radius:50%;background:#dbe9f9;color:var(--blue);font-weight:700;text-align:center;line-height:26px;font-size:.85rem}
+.note,.warn,.tip{border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+.note{background:var(--tip);border-left:4px solid var(--blue)}
+.tip{background:#e9f7ec;border-left:4px solid var(--ok)}
+.warn{background:var(--warnbg);border-left:4px solid #e0a800;color:#4d3800}
+.note b:first-child,.tip b:first-child,.warn b:first-child{margin-right:4px}
+figure{margin:12px 0}
+figure img{max-width:100%;border:1px solid var(--line);border-radius:8px;cursor:zoom-in;display:block}
+.pair{display:flex;gap:12px;flex-wrap:wrap}.pair figure{flex:1 1 320px}
+code,kbd{background:#eef1f6;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:.9em}
+table{border-collapse:collapse;margin:10px 0;width:100%}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;font-size:.93rem}
+th{background:#eef3fa}
+label.done{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 12px;background:#f1f6ee;border:1px solid #cfe5c8;border-radius:20px;cursor:pointer;font-size:.9rem;color:var(--ok);font-weight:600}
+section.step.complete{border-color:#9ad08f;background:#fbfef9}
+.optional{display:inline-block;background:#fde7e9;color:#a4262c;border-radius:4px;padding:1px 8px;font-size:.75rem;font-weight:700;margin-left:6px}
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:50;cursor:zoom-out}
+#lightbox img{max-width:94vw;max-height:94vh}
+footer{text-align:center;color:#667;padding:30px;font-size:.85rem}
+@media(max-width:900px){.layout{flex-direction:column}nav.toc{position:static;max-height:none;flex:none}}
