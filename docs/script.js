@@ -7,7 +7,7 @@
     document.getElementById('pct').textContent=n+' / '+boxes.length+' steps done';
     document.querySelector('#bar i').style.width=(100*n/boxes.length)+'%';
   }
-  boxes.forEach(function(b){
+  boxes.concat([].slice.call(document.querySelectorAll('input.optional-chk'))).forEach(function(b){
     b.checked=!!saved[b.id];
     b.closest('section').classList.toggle('complete',b.checked);
     b.addEventListener('change',function(){

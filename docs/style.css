@@ -25,6 +25,7 @@ nav.toc .grp{margin-top:10px;font-weight:600;color:var(--primary);font-size:.8re
 main{flex:1;min-width:0}
 section.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 26px;margin-bottom:22px}
 section.step h2{margin:0 0 4px;font-size:1.3rem;color:var(--dark);display:flex;gap:12px;align-items:center}
+#o1 h2{flex-wrap:wrap}
 .num{flex:none;width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem}
 .path{background:#e6f4f5;border-left:4px solid var(--primary);padding:8px 12px;border-radius:4px;margin:10px 0;font-family:Consolas,monospace;font-size:.9rem}
 h3.part{font-size:1.5rem;color:var(--dark);margin:34px 0 14px;padding-bottom:6px;border-bottom:3px solid var(--primary)}
