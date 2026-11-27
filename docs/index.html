@@ -56,6 +56,8 @@
   <a href="#t5">T5. DeepSeek blocked</a>
   <a href="#t6">T6. Risky app alert</a>
   <a href="#t7">T7. Protected admin group</a>
+  <div class="grp">Optional / if you finish early</div>
+  <a href="#o1">O1. Attack simulation training</a>
 </nav>
 
 <main>
@@ -449,6 +451,37 @@
       <figure><img src="images/image67.png" alt="Activate role"></figure></li>
   </ol>
   <label class="done"><input type="checkbox" class="chk" id="c-t7"> T7 done</label>
+</section>
+
+<section class="step" id="o1">
+  <h2><span class="num">O1</span>Attack simulation training <span class="optional">OPTIONAL</span></h2>
+  <div class="path">Microsoft Defender → Email &amp; collaboration → Attack simulation training</div>
+  <div class="note"><b>ℹ️</b> Even with Global Administrator activated, you may need to assign yourself the <b>Security Administrator</b> role. Wait 2 minutes, then sign out and back in.</div>
+  <ol class="do">
+    <li>Open <a href="https://security.microsoft.com/attacksimulator">Attack simulation training</a> in Microsoft Defender under <b>Email &amp; collaboration</b>. If you cannot see it, check the role guidance above.
+      <figure><img src="images/attack-sim-01.png" alt="Attack simulation training in the Defender navigation"></figure></li>
+    <li>Select <b>Launch a simulation</b>.
+      <figure><img src="images/attack-sim-02.png" alt="Launch a simulation button"></figure></li>
+    <li>Select <b>Credential Harvest</b>.
+      <figure><img src="images/attack-sim-03.png" alt="Credential Harvest technique selected"></figure></li>
+    <li>Enter a name for the simulation.
+      <figure><img src="images/attack-sim-04.png" alt="Name simulation screen"></figure></li>
+    <li>Select the <b>Black Friday Offer</b> payload.
+      <figure><img src="images/attack-sim-05.png" alt="Black Friday Offer payload selected"></figure></li>
+    <li>Choose <b>Include all users in my organization</b> for the lab simulation.
+      <figure><img src="images/attack-sim-06.png" alt="All users selected as simulation targets"></figure></li>
+    <li>Skip exclusions and leave the training assignment at its default. For a more targeted simulation, you can select a subset of users; the training options also support a third-party solution.
+      <figure><img src="images/attack-sim-07.png" alt="Default training assignment settings"></figure></li>
+    <li>Select <b>Microsoft Landing Page Template 1</b> and check <b>Add payload indicators to email</b>.
+      <figure><img src="images/attack-sim-08.png" alt="Landing page template and payload indicators selected"></figure></li>
+    <li>Keep the recommended Microsoft default notification and set the positive reinforcement notification's delivery preference to <b>Deliver during simulation</b>, so you can see the output.
+      <figure><img src="images/attack-sim-09.png" alt="Default notification and delivery preference"></figure></li>
+    <li>Make sure <b>Launch this simulation as soon as I'm done</b> is selected.
+      <figure><img src="images/attack-sim-10.png" alt="Launch simulation immediately selected"></figure></li>
+    <li>Select <b>Send a test</b>, wait 3 minutes and check the email. Then select <b>Submit</b>.
+      <figure><img src="images/attack-sim-11.png" alt="Review simulation with send a test and submit controls"></figure></li>
+  </ol>
+  <label class="done"><input type="checkbox" class="optional-chk" id="c-o1"> O1 done</label>
 </section>
 
 <section class="step"><h2>🎉 Lab complete – thank you!</h2></section>
